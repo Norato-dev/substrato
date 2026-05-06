@@ -37,7 +37,7 @@ export interface Post {
   readTime?: number;
   views: number;
   featured: boolean;
-  author: Pick<User, 'id' | 'name' | 'username' | 'avatar'>;
+  author: Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'bio'>;
   category: Category;
   tags: { tag: Tag }[];
   _count?: { comments: number; reactions: number };
