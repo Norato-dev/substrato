@@ -37,6 +37,8 @@ export interface Post {
   readTime?: number;
   views: number;
   featured: boolean;
+  seoTitle?: string;
+  seoDesc?: string;
   author: Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'bio'>;
   category: Category;
   tags: { tag: Tag }[];

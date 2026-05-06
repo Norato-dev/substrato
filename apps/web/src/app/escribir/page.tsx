@@ -27,6 +27,9 @@ function EscribirContent() {
   const [coverImage, setCoverImage] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [seoTitle, setSeoTitle] = useState('');
+  const [seoDesc, setSeoDesc] = useState('');
+  const [showSeo, setShowSeo] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('substrato_token');
@@ -44,6 +47,8 @@ function EscribirContent() {
           setCategoryId(post.categoryId ?? post.category?.id ?? '');
           setStatus(post.status);
           setCoverImage(post.coverImage ?? '');
+          setSeoTitle(post.seoTitle ?? '');
+          setSeoDesc(post.seoDesc ?? '');
         }
       });
     }
@@ -73,9 +78,9 @@ function EscribirContent() {
     try {
       let post: any;
       if (postId) {
-        post = await api.posts.update(postId, { title, excerpt, content: finalContent, categoryId, status, coverImage, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
+        post = await api.posts.update(postId, { title, excerpt, content: finalContent, categoryId, status, coverImage, seoTitle, seoDesc, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
       } else {
-        post = await api.posts.create({ title, excerpt, content: finalContent, categoryId, status, coverImage, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
+        post = await api.posts.create({ title, excerpt, content: finalContent, categoryId, status, coverImage, seoTitle, seoDesc, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
         setPostId(post.id);
       }
       setSaved(true);
@@ -112,6 +117,48 @@ function EscribirContent() {
         </div>
         <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="El título crece desde aquí..." style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(32px, 5vw, 56px)', letterSpacing: '-0.02em', lineHeight: 1.1, width: '100%', border: 'none', outline: 'none', background: 'transparent', color: 'var(--color-tierra)', marginBottom: '1.5rem' }} />
         <input type="text" value={excerpt} onChange={e => setExcerpt(e.target.value)} placeholder="Una bajada que da contexto..." style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '20px', width: '100%', border: 'none', outline: 'none', background: 'transparent', color: 'rgba(13,13,13,0.5)', marginBottom: '3rem' }} />
+        <div style={{ marginBottom: '2rem' }}>
+          <button
+            onClick={() => setShowSeo(!showSeo)}
+            className="mono"
+            style={{ background: 'transparent', border: 'none', color: 'rgba(13,13,13,0.5)', cursor: 'pointer', padding: 0, display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
+            {showSeo ? '−' : '+'} Configuración SEO {(seoTitle || seoDesc) && '✓'}
+          </button>
+          {showSeo && (
+            <div style={{ marginTop: '1rem', padding: '1.25rem', background: 'rgba(13,13,13,0.03)', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label className="mono" style={{ display: 'block', marginBottom: '6px', color: 'rgba(13,13,13,0.5)' }}>
+                  Título SEO {seoTitle && `(${seoTitle.length}/60)`}
+                </label>
+                <input
+                  type="text"
+                  value={seoTitle}
+                  onChange={e => setSeoTitle(e.target.value)}
+                  placeholder={title || 'Título personalizado para buscadores'}
+                  maxLength={60}
+                  style={{ width: '100%', padding: '10px 14px', border: '0.5px solid rgba(13,13,13,0.2)', borderRadius: '8px', background: 'var(--color-pergamino)', fontSize: '14px', outline: 'none', color: 'var(--color-tierra)', fontFamily: 'inherit' }}
+                />
+              </div>
+              <div>
+                <label className="mono" style={{ display: 'block', marginBottom: '6px', color: 'rgba(13,13,13,0.5)' }}>
+                  Descripción SEO {seoDesc && `(${seoDesc.length}/160)`}
+                </label>
+                <textarea
+                  value={seoDesc}
+                  onChange={e => setSeoDesc(e.target.value)}
+                  placeholder={excerpt || 'Descripción que aparece en Google'}
+                  maxLength={160}
+                  rows={2}
+                  style={{ width: '100%', padding: '10px 14px', border: '0.5px solid rgba(13,13,13,0.2)', borderRadius: '8px', background: 'var(--color-pergamino)', fontSize: '14px', outline: 'none', color: 'var(--color-tierra)', fontFamily: 'inherit', resize: 'vertical' }}
+                />
+              </div>
+              <div className="mono" style={{ color: 'rgba(13,13,13,0.4)', fontSize: '11px' }}>
+                Si dejas estos campos vacíos, se usarán el título y la bajada del artículo.
+              </div>
+            </div>
+          )}
+        </div>
         <div style={{ borderTop: '0.5px solid rgba(13,13,13,0.1)', paddingTop: '2rem' }}>
           <Editor key={editId ?? 'new'} content={content} onChange={setContent} />
         </div>

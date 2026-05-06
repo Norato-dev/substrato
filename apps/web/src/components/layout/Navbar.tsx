@@ -27,7 +27,7 @@ export default function Navbar() {
       </Link>
       <div className="flex gap-8">
         <Link href="/ideas" className="nav-link">Ideas</Link>
-        <Link href="/autores" className="nav-link">Autores</Link>
+        <Link href="/autor" className="nav-link">Autores</Link>
         <Link href="/archivo" className="nav-link">Archivo</Link>
       </div>
       <div className="flex gap-3 items-center" style={{ position: 'relative' }}>
