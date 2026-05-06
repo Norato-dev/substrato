@@ -6,6 +6,8 @@ import Navbar from '@/components/layout/Navbar';
 import { api } from '@/lib/api';
 import { Category } from '@/types';
 import { useToast } from '@/components/ui/Toast';
+import ImageUpload from '@/components/ui/ImageUpload';
+
 
 const Editor = dynamic(() => import('@/components/editor/Editor'), { ssr: false });
 
@@ -22,6 +24,7 @@ function EscribirContent() {
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>('DRAFT');
+  const [coverImage, setCoverImage] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -40,6 +43,7 @@ function EscribirContent() {
           setContent(post.content);
           setCategoryId(post.categoryId ?? post.category?.id ?? '');
           setStatus(post.status);
+          setCoverImage(post.coverImage ?? '');
         }
       });
     }
@@ -69,9 +73,9 @@ function EscribirContent() {
     try {
       let post: any;
       if (postId) {
-        post = await api.posts.update(postId, { title, excerpt, content: finalContent, categoryId, status, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
+        post = await api.posts.update(postId, { title, excerpt, content: finalContent, categoryId, status, coverImage, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
       } else {
-        post = await api.posts.create({ title, excerpt, content: finalContent, categoryId, status, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
+        post = await api.posts.create({ title, excerpt, content: finalContent, categoryId, status, coverImage, readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200) }, token);
         setPostId(post.id);
       }
       setSaved(true);

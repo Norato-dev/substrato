@@ -51,11 +51,47 @@ export const api = {
     list: () => request('/categories'),
     create: (data: { name: string; color?: string }, token: string) =>
       request('/categories', { method: 'POST', body: JSON.stringify(data), headers: { Authorization: `Bearer ${token}` } }),
+    update: (id: string, data: { name?: string; color?: string }, token: string) =>
+      request(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(data), headers: { Authorization: `Bearer ${token}` } }),
+    delete: (id: string, token: string) =>
+      request(`/categories/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }),
   },
   comments: {
     create: (data: { content: string; postId: string; parentId?: string }, token: string) =>
       request('/comments', { method: 'POST', body: JSON.stringify(data), headers: { Authorization: `Bearer ${token}` } }),
     delete: (id: string, token: string) =>
       request(`/comments/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }),
+  },
+  users: {
+    list: (token: string) =>
+      request('/users', { headers: { Authorization: `Bearer ${token}` } }),
+    updateRole: (id: string, role: string, token: string) =>
+      request(`/users/${id}/role`, { method: 'PUT', body: JSON.stringify({ role }), headers: { Authorization: `Bearer ${token}` } }),
+    updateProfile: (data: { name?: string; bio?: string; avatar?: string; password?: string }, token: string) =>
+      request('/users/profile', { method: 'PUT', body: JSON.stringify(data), headers: { Authorization: `Bearer ${token}` } }),
+    myComments: (token: string) =>
+      request('/users/comments', { headers: { Authorization: `Bearer ${token}` } }),
+  },
+  reactions: {
+    toggle: (postId: string, token: string, type = 'like') =>
+      request('/reactions/toggle', { method: 'POST', body: JSON.stringify({ postId, type }), headers: { Authorization: `Bearer ${token}` } }),
+    status: (postId: string, token: string, type = 'like') =>
+      request(`/reactions/post/${postId}?type=${type}`, { headers: { Authorization: `Bearer ${token}` } }),
+  },
+  upload: {
+    image: async (file: File, token: string): Promise<{ url: string; id: string }> => {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch(`${API_URL}/upload/image`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Error al subir');
+      }
+      return res.json();
+    },
   },
 };

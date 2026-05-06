@@ -16,9 +16,29 @@ const items: SlashItem[] = [
   { title: 'Callout', description: 'Bloque con énfasis', icon: '◆', command: ({ editor, range }) => editor.chain().focus().deleteRange(range).setCallout('info').run() },
   { title: 'Código', description: 'Bloque de código', icon: '</>', command: ({ editor, range }) => editor.chain().focus().deleteRange(range).toggleCodeBlock().run() },
   { title: 'Separador', description: 'Línea horizontal', icon: '—', command: ({ editor, range }) => editor.chain().focus().deleteRange(range).setHorizontalRule().run() },
-  { title: 'Imagen', description: 'Subir o pegar URL', icon: '◫', command: ({ editor, range }) => {
-    const url = prompt('URL de la imagen:');
-    if (url) editor.chain().focus().deleteRange(range).setImage({ src: url }).run();
+  { title: 'Imagen', description: 'Subir desde tu computador', icon: '◫', command: ({ editor, range }) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e: any) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const token = localStorage.getItem('substrato_token');
+      if (!token) return alert('Inicia sesión');
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/image`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+        const data = await res.json();
+        if (data.url) editor.chain().focus().deleteRange(range).setImage({ src: data.url }).run();
+        else alert(data.error || 'Error al subir');
+      } catch { alert('Error al subir imagen'); }
+    };
+    input.click();
   }},
   { title: 'YouTube', description: 'Embed de video', icon: '▶', command: ({ editor, range }) => {
     const url = prompt('URL de YouTube:');
