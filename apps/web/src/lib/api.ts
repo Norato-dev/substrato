@@ -52,4 +52,10 @@ export const api = {
     create: (data: { name: string; color?: string }, token: string) =>
       request('/categories', { method: 'POST', body: JSON.stringify(data), headers: { Authorization: `Bearer ${token}` } }),
   },
+  comments: {
+    create: (data: { content: string; postId: string; parentId?: string }, token: string) =>
+      request('/comments', { method: 'POST', body: JSON.stringify(data), headers: { Authorization: `Bearer ${token}` } }),
+    delete: (id: string, token: string) =>
+      request(`/comments/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }),
+  },
 };

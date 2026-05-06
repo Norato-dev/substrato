@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar';
 import ArticleHero from '@/components/blog/ArticleHero';
 import ArticleBody from '@/components/blog/ArticleBody';
 import ArticleFooter from '@/components/blog/ArticleFooter';
+import Comments from '@/components/blog/Comments';
 import { api } from '@/lib/api';
 import { Post } from '@/types';
 
@@ -25,6 +26,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <ArticleHero post={post} />
       <ArticleBody post={post} />
       <ArticleFooter post={post} />
+      <Comments postId={post.id} initial={(post as any).comments ?? []} />
     </main>
   );
 }
