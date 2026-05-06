@@ -7,7 +7,7 @@ import { AuthRequest } from '../middleware/auth';
 const postSchema = z.object({
   title: z.string().min(3),
   excerpt: z.string().optional(),
-  content: z.any(),
+  content: z.any().default({ type: 'doc', content: [] }),
   coverImage: z.string().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'SCHEDULED', 'ARCHIVED']).optional(),
   categoryId: z.string(),
@@ -20,8 +20,11 @@ const postSchema = z.object({
 
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
+    console.log('BODY RECIBIDO:', JSON.stringify(req.body, null, 2));
     const data = postSchema.parse(req.body);
-    const slug = slugify(data.title, { lower: true, strict: true });
+    let slug = slugify(data.title, { lower: true, strict: true });
+    const existing = await prisma.post.findUnique({ where: { slug } });
+    if (existing) slug = `${slug}-${Date.now()}`;
 
     const post = await prisma.post.create({
       data: {
@@ -86,7 +89,7 @@ export const getPosts = async (req: AuthRequest, res: Response) => {
 export const getPost = async (req: AuthRequest, res: Response) => {
   try {
     const post = await prisma.post.findUnique({
-      where: { slug: req.params.slug },
+      where: { slug: req.params.slug as string},
       include: {
         author: { select: { id: true, name: true, username: true, avatar: true, bio: true } },
         category: true,
@@ -116,7 +119,7 @@ export const getPost = async (req: AuthRequest, res: Response) => {
 export const updatePost = async (req: AuthRequest, res: Response) => {
   try {
     const data = postSchema.partial().parse(req.body);
-    const post = await prisma.post.findUnique({ where: { id: req.params.id } });
+    const post = await prisma.post.findUnique({ where: { id: req.params.id as string } });
 
     if (!post) return res.status(404).json({ error: 'Post no encontrado' });
     if (post.authorId !== req.user!.id && req.user!.role !== 'ADMIN' && req.user!.role !== 'EDITOR') {
@@ -124,7 +127,7 @@ export const updatePost = async (req: AuthRequest, res: Response) => {
     }
 
     const updated = await prisma.post.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: {
         ...data,
         publishedAt: data.status === 'PUBLISHED' ? new Date() : undefined,
@@ -145,12 +148,12 @@ export const updatePost = async (req: AuthRequest, res: Response) => {
 
 export const deletePost = async (req: AuthRequest, res: Response) => {
   try {
-    const post = await prisma.post.findUnique({ where: { id: req.params.id } });
+    const post = await prisma.post.findUnique({ where: { id: req.params.id as string } });
     if (!post) return res.status(404).json({ error: 'Post no encontrado' });
     if (post.authorId !== req.user!.id && req.user!.role !== 'ADMIN') {
       return res.status(403).json({ error: 'Sin permisos' });
     }
-    await prisma.post.delete({ where: { id: req.params.id } });
+    await prisma.post.delete({ where: { id: req.params.id as string } });
     res.json({ message: 'Post eliminado' });
   } catch {
     res.status(500).json({ error: 'Error interno' });

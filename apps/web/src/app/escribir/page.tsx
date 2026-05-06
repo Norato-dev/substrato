@@ -9,10 +9,11 @@ import { Category } from '@/types';
 const Editor = dynamic(() => import('@/components/editor/Editor'), { ssr: false });
 
 export default function EscribirPage() {
+  const [postId, setPostId] = useState<string | null>(null);
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
-  const [content, setContent] = useState<any>(null);
+  const [content, setContent] = useState<any>({ type: 'doc', content: [{ type: 'paragraph' }] });
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>('DRAFT');
@@ -28,14 +29,38 @@ export default function EscribirPage() {
     if (!token) return router.push('/login');
     if (!title || !categoryId) return alert('El título y la categoría son requeridos');
 
+    const finalContent = content ?? { type: 'doc', content: [{ type: 'paragraph' }] };
+
     setSaving(true);
     try {
-      await api.posts.create({ title, excerpt, content, categoryId, status, readTime: Math.ceil((JSON.stringify(content || {}).length / 5) / 200) }, token);
+      let post: any;
+
+      if (postId) {
+        post = await api.posts.update(postId, {
+          title,
+          excerpt,
+          content: finalContent,
+          categoryId,
+          status,
+          readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200),
+        }, token);
+      } else {
+        post = await api.posts.create({
+          title,
+          excerpt,
+          content: finalContent,
+          categoryId,
+          status,
+          readTime: Math.ceil((JSON.stringify(finalContent).length / 5) / 200),
+        }, token);
+        setPostId(post.id);
+      }
+
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
       if (status === 'PUBLISHED') router.push('/');
     } catch (e: any) {
-      alert(e.message);
+      alert(e.message || JSON.stringify(e));
     } finally {
       setSaving(false);
     }

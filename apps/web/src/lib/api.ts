@@ -1,14 +1,27 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (options?.headers) {
+    Object.assign(headers, options.headers);
+  }
+
   const res = await fetch(`${API_URL}${endpoint}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
+    headers,
   });
+
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error.error || 'Error en la petición');
+    const message = Array.isArray(error.error)
+      ? error.error.map((e: any) => e.message).join(', ')
+      : error.error || 'Error en la petición';
+    throw new Error(message);
   }
+
   return res.json();
 }
 
