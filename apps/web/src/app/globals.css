@@ -138,3 +138,56 @@ h1, h2, h3, h4 {
 .prose-organic a:hover {
   background: var(--color-brote);
 }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none !important; }
+  .nav-mobile-toggle { display: flex !important; }
+  .nav-mobile-panel { display: flex !important; }
+}
+
+@media (max-width: 768px) {
+  .prose-organic h2 { font-size: 28px; margin-top: 2.5rem; }
+  .prose-organic h3 { font-size: 22px; margin-top: 2rem; }
+  .prose-organic blockquote { font-size: 20px; padding-left: 1.25rem; margin: 2rem 0; }
+  .prose-organic { font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+  .tiptap-editor h1 { font-size: 32px; }
+  .tiptap-editor h2 { font-size: 26px; }
+  .tiptap-editor h3 { font-size: 20px; }
+  .bubble-menu { flex-wrap: wrap; max-width: 280px; }
+  .slash-menu { width: 240px; }
+}
+
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 7fr 5fr !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero-left {
+    border-right: none !important;
+    border-bottom: 0.5px solid rgba(13,13,13,0.12);
+  }
+}
+
+@media (min-width: 768px) {
+  .post-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .post-grid > a {
+    border-bottom: none !important;
+  }
+  .post-grid > a:not(:last-child) {
+    border-right: 0.5px solid rgba(13,13,13,0.12);
+  }
+}
+
+@media (min-width: 768px) {
+  .archivo-grid {
+    grid-template-columns: 1fr 3fr !important;
+    gap: 3rem !important;
+  }
+}

@@ -16,7 +16,7 @@ export default function PostGrid({ posts }: { posts: Post[] }) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 section-divider">
+      <div className="post-grid section-divider" style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
         {posts.map((p, i) => {
           const sizes = ['22px', '18px', '20px'];
           const colors = [
@@ -32,7 +32,7 @@ export default function PostGrid({ posts }: { posts: Post[] }) {
               className="block transition-colors"
               style={{
                 padding: 'clamp(2rem, 3vw, 2.5rem)',
-                borderRight: i < posts.length - 1 ? '0.5px solid rgba(13,13,13,0.12)' : 'none',
+                borderBottom: i < posts.length - 1 ? '0.5px solid rgba(13,13,13,0.12)' : 'none',
               }}
             >
               <div className="mono" style={{ color: c.cat, marginBottom: '1rem' }}>

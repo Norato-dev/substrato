@@ -7,6 +7,7 @@ import { api } from '@/lib/api';
 import { Post, User, Category } from '@/types';
 import { useToast } from '@/components/ui/Toast';
 import ImageUpload from '@/components/ui/ImageUpload';
+import { Skeleton, SkeletonBlob } from '@/components/ui/Skeleton';
 
 type Tab = 'posts' | 'comments' | 'categories' | 'users' | 'profile';
 

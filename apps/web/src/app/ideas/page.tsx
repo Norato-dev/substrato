@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Post, Category } from '@/types';
+import { Skeleton, SkeletonBlob } from '@/components/ui/Skeleton';
 
 export default function IdeasPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -69,7 +70,16 @@ export default function IdeasPage() {
 
       <div style={{ padding: '0 clamp(1.5rem, 5vw, 4rem)' }}>
         {loading ? (
-          <div style={{ padding: '4rem 0', textAlign: 'center' }} className="mono">Cargando...</div>
+          <div>
+            {[...Array(5)].map((_, i) => (
+            <div key={i} style={{ padding: '2rem 0', borderTop: '0.5px solid rgba(13,13,13,0.1)' }}>
+                <Skeleton width="100px" height="11px" style={{ marginBottom: '12px' }} />
+                <Skeleton height="28px" style={{ marginBottom: '8px', maxWidth: '600px' }} />
+                <Skeleton height="14px" width="80%" style={{ marginBottom: '12px' }} />
+                <Skeleton width="180px" height="11px" />
+            </div>
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
           <div style={{ padding: '4rem 0', textAlign: 'center' }}>
             <p className="serif italic" style={{ fontSize: '24px', color: 'rgba(13,13,13,0.4)' }}>Nada crece aquí todavía</p>

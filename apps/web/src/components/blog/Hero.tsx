@@ -3,14 +3,8 @@ import { Post } from '@/types';
 
 export default function Hero({ post, sidePosts }: { post: Post; sidePosts: Post[] }) {
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-12" style={{ minHeight: '88vh' }}>
-      <div
-        className="lg:col-span-7 flex flex-col justify-between"
-        style={{
-          padding: 'clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 4vw, 4rem)',
-          borderRight: '0.5px solid rgba(13,13,13,0.12)',
-        }}
-      >
+    <section style={{ display: 'grid', gridTemplateColumns: '1fr', minHeight: '88vh' }} className="hero-grid">
+      <div className="hero-left" style={{ padding: 'clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 4vw, 4rem)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRight: '0.5px solid rgba(13,13,13,0.12)' }}>
         <div>
           <div className="mono" style={{ color: 'var(--color-musgo)', marginBottom: '2rem' }}>
             Destacado esta semana
@@ -59,7 +53,7 @@ export default function Hero({ post, sidePosts }: { post: Post; sidePosts: Post[
         </div>
       </div>
 
-      <div className="lg:col-span-5 flex flex-col">
+      <div className="hero-right" style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ flex: 1, background: 'var(--color-brote)', position: 'relative', overflow: 'hidden', minHeight: '400px' }}>
           <div
             className="organic-blob breathe"

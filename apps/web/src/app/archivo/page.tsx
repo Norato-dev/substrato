@@ -53,7 +53,7 @@ export default async function ArchivoPage() {
             const [year, month] = key.split('-');
             return (
               <section key={key} style={{ borderTop: '0.5px solid rgba(13,13,13,0.12)', padding: '3rem 0' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '3rem', alignItems: 'start' }}>
+                <div className="archivo-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem', alignItems: 'start' }}>
                   <div style={{ position: 'sticky', top: '2rem' }}>
                     <div className="serif" style={{ fontSize: 'clamp(36px, 5vw, 56px)', lineHeight: 1, marginBottom: '4px' }}>
                       {months[parseInt(month) - 1]}
