@@ -32,3 +32,32 @@ export const getCategories = async (_req: Request, res: Response) => {
     res.status(500).json({ error: 'Error interno' });
   }
 };
+
+export const updateCategory = async (req: Request, res: Response) => {
+  try {
+    const data = categorySchema.partial().parse(req.body);
+    const update: any = { ...data };
+    if (data.name) update.slug = slugify(data.name, { lower: true });
+    const category = await prisma.category.update({
+      where: { id: req.params.id as string },
+      data: update,
+    });
+    res.json(category);
+  } catch (error) {
+    if (error instanceof z.ZodError) return res.status(400).json({ error: error.issues });
+    res.status(500).json({ error: 'Error interno' });
+  }
+};
+
+export const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    const postCount = await prisma.post.count({ where: { categoryId: req.params.id as string } });
+    if (postCount > 0) {
+      return res.status(400).json({ error: `No se puede eliminar: tiene ${postCount} artículo(s)` });
+    }
+    await prisma.category.delete({ where: { id: req.params.id as string } });
+    res.json({ message: 'Categoría eliminada' });
+  } catch {
+    res.status(500).json({ error: 'Error interno' });
+  }
+};
