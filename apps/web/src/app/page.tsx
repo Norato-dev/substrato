@@ -5,6 +5,8 @@ import PostGrid from '@/components/blog/PostGrid';
 import { api } from '@/lib/api';
 import { PaginatedPosts } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 async function getPosts(): Promise<PaginatedPosts> {
   try {
     return await api.posts.list({ status: 'PUBLISHED' }) as PaginatedPosts;

@@ -9,6 +9,8 @@ import ReactionButton from '@/components/blog/ReactionButton';
 import { api } from '@/lib/api';
 import { Post } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 async function getPost(slug: string): Promise<Post | null> {
   try { return (await api.posts.get(slug)) as Post; } catch { return null; }
 }

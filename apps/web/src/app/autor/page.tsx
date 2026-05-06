@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Post } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 async function getAuthors() {
   try {
     const data: any = await api.posts.list({ status: 'PUBLISHED' });
